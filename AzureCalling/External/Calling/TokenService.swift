@@ -15,12 +15,16 @@ class TokenService {
     }
 
     func getCommunicationToken(completionHandler: @escaping (String?, Error?) -> Void) {
+        let json: [String: Any] = ["acsmri": "8:acs:e7d15876-7f5f-4005-850d-c96843c48666_0000000f-198c-b6fd-99bf-a43a0d002a48"]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
         let url = URL(string: communicationTokenFetchUrl)!
         var urlRequest = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10)
-        urlRequest.httpMethod = "GET"
-        if let authToken = getAuthTokenFunction() {
-            urlRequest.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
-        }
+        urlRequest.httpMethod = "POST"
+        urlRequest.httpBody = jsonData
+        //urlRequest.httpMethod = "GET"
+        //if let authToken = getAuthTokenFunction() {
+        //    urlRequest.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        //}
 
         URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
             if let error = error {
